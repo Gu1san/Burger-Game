@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Plate : MonoBehaviour
 {
-    [SerializeField] Stack<GameObject> ingredients = new();
+    public Stack<GameObject> ingredients = new();
 
     public void AddIngredient(GameObject ingredient)
     {
