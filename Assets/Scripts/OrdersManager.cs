@@ -8,17 +8,21 @@ public class OrdersManager : MonoBehaviour
     [SerializeField] GameObject[] availableIngredients;
     [SerializeField] GameObject bread;
     [SerializeField] Plate plate;
+    [SerializeField] GameObject orderCard;
 
     [SerializeField] TMP_Text clientNameText; 
     [SerializeField] TMP_Text addressText; 
     [SerializeField] TMP_Text ingredientsText;
+    [SerializeField] Transform ordersParent;
 
     [SerializeField] RandomUserAPI api;
 
     public Queue<Order> orders = new();
 
     public async void GetOrder(){
-        await RandomOrderAsync();
+        Order order = await RandomOrderAsync();
+        orders.Enqueue(order);
+        Instantiate(orderCard, ordersParent).GetComponent<OrderCard>().FillOrder(order);
     }
 
     private async Task<Order> RandomOrderAsync(){
@@ -35,15 +39,6 @@ public class OrdersManager : MonoBehaviour
             order.ingredients.Push(ingredient);
         }
         order.ingredients.Push(bread);
-        string orderDetails = string.Empty;
-        foreach (var item in order.ingredients)
-        {
-            orderDetails += item.name + ", ";
-        }
-        ingredientsText.text = orderDetails;
-        clientNameText.text = $"{order.client.name.first} {order.client.name.last}";
-        addressText.text = $"{order.client.location.street.name}, {order.client.location.street.number} - {order.client.location.city}";
-        orders.Enqueue(order);
         return order;
     }
 
